@@ -3,13 +3,16 @@
 public class HoamingMiissileTip : MonoBehaviour
 {
     public GameObject hoamingMisssile, particleEffect;
-    public float explosionRadius = 5;
-    public float explosionForce = 10000;
+    public float explosionRadius = 5, explosionForce = 10000;
+    public int explosionDamage = 40;
+    public string playerTag, enemyTag="Enemy";
 
     private void Start()
     {
         Invoke(nameof(enableCollider), 1f);
+        if (playerTag.Equals("")) playerTag = FindObjectOfType<Player>().tag;
     }
+
     void enableCollider()
     {
         GetComponent<SphereCollider>().enabled = true;
@@ -17,7 +20,7 @@ public class HoamingMiissileTip : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position = hoamingMisssile.transform.position - hoamingMisssile.transform.forward * 3.4f;
+        transform.position = hoamingMisssile.transform.position - hoamingMisssile.transform.forward * 4f;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -35,10 +38,13 @@ public class HoamingMiissileTip : MonoBehaviour
             Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
             if(rb != null)
             {
+                if (rb.tag.Equals(playerTag))
+                    rb.GetComponent<Player>().TakeDamage(explosionDamage);
+                if (rb.tag.Equals(enemyTag))
+                    rb.GetComponent<Enemy>().TakeDamage(explosionDamage);
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
             }
         }
-
     }
 
 }

@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GrenadeThrower : MonoBehaviour
 {
     public GameObject grenade;
     public Transform player;
-    public float throwSpeed = 30;
+    public float throwSpeed = 40;
 
     private void Start()
     {
@@ -22,7 +20,7 @@ public class GrenadeThrower : MonoBehaviour
 
     void ThrowGrenade()
     {
-        GameObject tempGrenade = Instantiate(grenade, player.position + player.forward, transform.rotation);
+        GameObject tempGrenade = Instantiate(grenade, player.position + 1.5f * player.forward, transform.rotation);
         Rigidbody rb = tempGrenade.GetComponent<Rigidbody>();
         Rigidbody rb2 = player.GetComponent<Rigidbody>();
         if ((rb2.velocity + player.forward).magnitude > rb2.velocity.magnitude)

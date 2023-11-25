@@ -8,12 +8,14 @@ public class EnemyStats : MonoBehaviour
     private Slider slider;
     private Text healthText;
     private Image fill;
+    private Image background;
 
     private void Awake()
     {
         slider = GameObject.FindGameObjectWithTag("EnemyHealthBar").GetComponent<Slider>();
         healthText = GameObject.FindGameObjectWithTag("EnemyHealthBar").GetComponentInChildren<Text>();
-        fill = GameObject.FindGameObjectWithTag("EnemyHealthBar").GetComponentInChildren<Image>();
+        background = GameObject.FindGameObjectWithTag("EnemyHealthBar").GetComponentsInChildren<Image>()[0];
+        fill = GameObject.FindGameObjectWithTag("EnemyHealthBar").GetComponentsInChildren<Image>()[1];
     }
 
     private void Start()
@@ -38,12 +40,14 @@ public class EnemyStats : MonoBehaviour
     {
         slider.enabled = true;
         fill.enabled = true;
+        background.enabled = true;
         healthText.enabled = true;
     }
     public void DisableHealthBar()
     {
         slider.enabled = false;
         fill.enabled = false;
+        background.enabled = false;
         healthText.enabled = false;
     }
 

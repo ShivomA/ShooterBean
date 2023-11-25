@@ -19,4 +19,11 @@ public class Player : MonoBehaviour
         stats.SetCurrentHealth(currentHealth, maxHealth);
     }
 
+    public void IncreaseHealth(int health)
+    {
+        currentHealth += health;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        stats.SetCurrentHealth(currentHealth, maxHealth);
+    }
+
 }

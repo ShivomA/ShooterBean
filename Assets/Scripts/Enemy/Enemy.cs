@@ -8,10 +8,10 @@ public class Enemy : MonoBehaviour
 
     private EnemyStats stats;
     private NavMeshAgent agent;
-    private LineRenderer lr;
     private Rigidbody rb;
 
     private float attackRange = 100;
+    private bool isAttacking = true;
     [HideInInspector]
     public int currentHealth, maxHealth = 100;
 
@@ -21,7 +21,6 @@ public class Enemy : MonoBehaviour
             player = FindObjectOfType<Player>().transform;
         stats = GetComponent<EnemyStats>();
         agent = GetComponent<NavMeshAgent>();
-        lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -34,7 +33,51 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        agent.SetDestination(player.position);
+        if (transform.position.y < -100)
+            TakeDamage(maxHealth);
+        if (rb.velocity.magnitude >= agent.speed + 20)
+            rb.velocity = Vector3.zero;
+        if (currentHealth <= 30)
+        {
+            Potion potionObject = FindObjectOfType<Potion>();
+            if (potionObject != null && Vector3.Distance(potionObject.transform.position, transform.position) < 100)
+            {
+                Transform potion = potionObject.transform;
+                agent.enabled = true;
+                agent.SetDestination(potion.position);
+                CancelInvoke(nameof(Attack));
+                isAttacking = false;
+            }
+            else
+            {
+                GotoPosition();
+            }
+        }
+        else
+        {
+            GotoPosition();
+        }
+    }
+
+    public void GotoPosition()
+    {
+        if ((player.position - transform.position).magnitude >= 20)
+        {
+            agent.enabled = true;
+            agent.SetDestination(player.position);
+        }
+        else
+        {
+            agent.enabled = false;
+            Vector3 direction = (player.position - transform.position).normalized;
+            Vector3 rotateAmount = Vector3.Cross(direction, transform.forward);
+            rb.angularVelocity = rotateAmount * 5000;
+        }
+        if (!isAttacking)
+        {
+            isAttacking = true;
+            Attack();
+        }
     }
 
     public void Attack()
@@ -47,10 +90,9 @@ public class Enemy : MonoBehaviour
             if (hit.collider.tag == player.tag && distance < attackRange)
             {
                 GameObject tempBullet = Instantiate(bullet, gunTip.position, Quaternion.LookRotation(player.position - gunTip.position));
-                tempBullet.GetComponent<EnemyBullet>().Fire(player.position - gunTip.position,  10 + rb.velocity.magnitude);
+                tempBullet.transform.Rotate(Vector3.right, 90);
+                tempBullet.GetComponent<EnemyBullet>().Fire(player.position - gunTip.position,  50 + rb.velocity.magnitude);
                 Invoke(nameof(Attack), 5f);
-                if (rb.velocity.magnitude >= agent.speed + 2)
-                    rb.velocity = Vector3.zero;
             }
             else
             {
@@ -70,6 +112,13 @@ public class Enemy : MonoBehaviour
             stats.DisableHealthBar();
             Destroy(gameObject);
         }
+    }
+
+    public void IncreaseHealth(int health)
+    {
+        currentHealth += health;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        stats.SetCurrentHealth(currentHealth, maxHealth);
     }
 
 }

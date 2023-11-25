@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6083033126925123012}
   - component: {fileID: 5251261869640070229}
   - component: {fileID: 7592872052016422102}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Hand Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,4 +128,7 @@ MonoBehaviour:
     type: 3}
   explosionRadius: 5
   explosionForce: 1000
+  explosionDamage: 40
   MissileTag: Missile
+  playerTag: 
+  enemyTag: Enemy

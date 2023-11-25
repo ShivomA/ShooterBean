@@ -9,9 +9,12 @@ public class PlayerStats : MonoBehaviour
     private Text healthText;
     private Image healthFill;
 
-    private Slider slowMoSlider;
-    private Text slowMoText;
-    private Image slowMoFill;
+    public Slider slowTimeSlider;
+    public Text slowTimeText;
+    public Image slowTimeFill;
+    public Image slowTimeBackground;
+
+    private Text reloadingText;
 
     private Text bulletCount;
 
@@ -21,9 +24,12 @@ public class PlayerStats : MonoBehaviour
         healthText = GameObject.FindGameObjectWithTag("HealthBar").GetComponentInChildren<Text>();
         healthFill = GameObject.FindGameObjectWithTag("HealthBar").GetComponentsInChildren<Image>()[1];
 
-        slowMoSlider = GameObject.FindGameObjectWithTag("SlowMo").GetComponent<Slider>();
-        slowMoText = GameObject.FindGameObjectWithTag("SlowMo").GetComponentInChildren<Text>();
-        slowMoFill = GameObject.FindGameObjectWithTag("SlowMo").GetComponentsInChildren<Image>()[1];
+        slowTimeSlider = GameObject.FindGameObjectWithTag("SlowTime").GetComponent<Slider>();
+        slowTimeText = GameObject.FindGameObjectWithTag("SlowTime").GetComponentInChildren<Text>();
+        slowTimeBackground = GameObject.FindGameObjectWithTag("SlowTime").GetComponentsInChildren<Image>()[0];
+        slowTimeFill = GameObject.FindGameObjectWithTag("SlowTime").GetComponentsInChildren<Image>()[1];
+
+        reloadingText = GameObject.FindGameObjectWithTag("Reload").GetComponentInChildren<Text>();
         
         bulletCount = GameObject.FindGameObjectWithTag("BulletCount").GetComponentInChildren<Text>();
     }
@@ -35,14 +41,35 @@ public class PlayerStats : MonoBehaviour
         healthText.text = _currentHealth.ToString();
         healthFill.color = gradient.Evaluate(healthSlider.normalizedValue);
     }
-    
-    public void setSlowMoTime(float _slowMoTime)
+
+    public void setSlowMoTime(float _slowMoTime, float _maxSlowMoTime = 50)
     {
-        float maxSlowMoTime = FindObjectOfType<Gun>().maxSlowMoTime;
-        slowMoSlider.maxValue = maxSlowMoTime;
-        slowMoSlider.value = _slowMoTime;
-        slowMoText.text = _slowMoTime.ToString("0.0");
-        slowMoFill.color = gradient.Evaluate(slowMoSlider.normalizedValue);
+        enableSlowTime();
+
+        slowTimeSlider.maxValue = _maxSlowMoTime;
+        slowTimeSlider.value = _slowMoTime;
+        slowTimeText.text = _slowMoTime.ToString("0.0");
+        slowTimeFill.color = gradient.Evaluate(slowTimeSlider.normalizedValue);
+    }
+
+    void enableSlowTime()
+    {
+        slowTimeSlider.enabled = true;
+        slowTimeFill.enabled = true;
+        slowTimeText.enabled = true;
+        slowTimeBackground.enabled = true;
+    }
+    public void disableSlowTime()
+    {
+        slowTimeSlider.enabled = false;
+        slowTimeFill.enabled = false;
+        slowTimeText.enabled = false;
+        slowTimeBackground.enabled = false;
+    }
+
+    public void setReloading(string msg="Reloading")
+    {
+        reloadingText.text = msg;
     }
 
     public void setBulletCount(int _bulletCount)

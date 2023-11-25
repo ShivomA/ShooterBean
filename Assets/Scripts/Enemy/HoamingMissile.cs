@@ -7,19 +7,21 @@ public class HoamingMissile : MonoBehaviour
     [HideInInspector]
     public int currentHealth, maxHealth = 50;
     
-    public float explosionRadius = 5;
-    public float explosionForce = 10000;
+    public float explosionRadius = 5, explosionForce = 10000;
+    public int explosionDamage = 40;
+    public string playerTag, enemyTag = "Enemy";
 
     private Transform target;
     private Rigidbody rb;
     private ParticleSystem ps;
 
-    [SerializeField] float speed = 25, rotateSpeed = 5;
+    float speed = 50, rotateSpeed = 15;
 
     private void Awake()
     {
         FindObjectOfType<AudioManager>().Play("MissileLaunch", 0.7f);
-        target = FindObjectOfType<MovementController>().transform;
+        if (FindObjectOfType<Enemy>() != null) target = FindObjectOfType<Enemy>().transform;
+        else target = FindObjectOfType<Player>().transform;
         stats = GetComponent<EnemyStats>();
         rb = GetComponent<Rigidbody>();
         ps = blastEffect.GetComponent<ParticleSystem>();
@@ -69,6 +71,10 @@ public class HoamingMissile : MonoBehaviour
                 rb = nearbyObject.GetComponent<Rigidbody>();
                 if (rb != null)
                 {
+                    if (rb.tag.Equals(playerTag))
+                        rb.GetComponent<Player>().TakeDamage(explosionDamage);
+                    if (rb.tag.Equals(enemyTag))
+                        rb.GetComponent<Enemy>().TakeDamage(explosionDamage);
                     rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
                 }
             }
@@ -88,6 +94,10 @@ public class HoamingMissile : MonoBehaviour
             Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                if (rb.tag.Equals(playerTag))
+                    rb.GetComponent<Player>().TakeDamage(explosionDamage);
+                if (rb.tag.Equals(enemyTag))
+                    rb.GetComponent<Enemy>().TakeDamage(explosionDamage);
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
             }
         }

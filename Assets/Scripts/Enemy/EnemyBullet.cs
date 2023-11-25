@@ -18,7 +18,7 @@ public class EnemyBullet : MonoBehaviour
         if (EnemyTag == null)
             EnemyTag = FindObjectOfType<Enemy>().tag;
     }
-    public void Fire(Vector3 _direction, float muzzleVelocity = 5)
+    public void Fire(Vector3 _direction, float muzzleVelocity = 50)
     {
         rb = GetComponent<Rigidbody>();
         direction = _direction;
